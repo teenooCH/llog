@@ -6,6 +6,7 @@ Several helpers for consistent formating are provided.
 package llog
 
 import (
+	"bytes"
 	"log"
 	"os"
 )
@@ -61,4 +62,23 @@ func (l lvlLogger) printf(level int, format string, msg ...interface{}) {
 		l.log.Printf(format, msg...)
 		l.out.Sync()
 	}
+}
+
+func (l *lvlLogger) rotate(postfix string) error {
+	var buf bytes.Buffer
+	l.log.SetOutput(&buf)
+	n := l.out.Name()
+	e := os.Rename(n, n+postfix)
+	if e != nil {
+		l.log.SetOutput(l.out)
+		return e
+	}
+	l.out.Close()
+	l.out, e = os.OpenFile(n, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0640)
+	if e != nil {
+		return e
+	}
+	l.log = log.New(l.out, "", log.LstdFlags|log.LUTC)
+	// kopieren von buf
+	return nil
 }
