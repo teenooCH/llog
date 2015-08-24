@@ -11,6 +11,15 @@ import (
 	"os"
 )
 
+const (
+	_ = iota
+	MAIN
+	ERROR
+	WARNING
+	INFO
+	DEBUG
+)
+
 var ll lvlLogger
 
 type lvlLogger struct {
@@ -37,27 +46,37 @@ func Close() {
 	ll.out.Close()
 }
 
+// SetLevel sets a new log level
+func SetLevel(l int) {
+	ll.lvl = l
+}
+
+// PrintMain writes an Maininfo msg to the log
+func PrintMain(id, msg string) {
+	ll.writeLog(MAIN, "%-15s :INFO : %s\n", id, msg)
+}
+
 // PrintInfo writes an Info msg to the log
-func PrintInfo(level int, id, msg string) {
-	ll.printf(level, "%-15s :INFO : %s\n", id, msg)
+func PrintInfo(id, msg string) {
+	ll.writeLog(INFO, "%-15s :INFO : %s\n", id, msg)
 }
 
 // PrintWarning writes a Warning msg to the log
-func PrintWarning(level int, id, msg string) {
-	ll.printf(level, "%-15s :WARN : %s\n", id, msg)
+func PrintWarning(id, msg string) {
+	ll.writeLog(WARNING, "%-15s :WARN : %s\n", id, msg)
 }
 
 // PrintError writes an Error msg to the log
-func PrintError(level int, id, msg string) {
-	ll.printf(level, "%-15s :ERROR: %s\n", id, msg)
+func PrintError(id, msg string) {
+	ll.writeLog(ERROR, "%-15s :ERROR: %s\n", id, msg)
 }
 
 // PrintDebug writes an Debug msg to the log
-func PrintDebug(level int, id, msg string) {
-	ll.printf(level, "%-15s :DEBUG: %s\n", id, msg)
+func PrintDebug(id, msg string) {
+	ll.writeLog(DEBUG, "%-15s :DEBUG: %s\n", id, msg)
 }
 
-func (l lvlLogger) printf(level int, format string, msg ...interface{}) {
+func (l lvlLogger) writeLog(level int, format string, msg ...interface{}) {
 	if level <= l.lvl {
 		l.log.Printf(format, msg...)
 		l.out.Sync()

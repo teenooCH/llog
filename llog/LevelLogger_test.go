@@ -1,16 +1,16 @@
 /*
 Output expected similar to :
 
-2015/08/21 21:34:12                 :INFO : Start of test
-2015/08/21 21:34:12 Info(2)         :INFO : Line 1
-2015/08/21 21:34:12 Info(1)         :INFO : Line 2
-2015/08/21 21:34:12 Info(4)         :INFO : Line 3
-2015/08/21 21:34:12 Warning(3)      :WARN : Line 1
-2015/08/21 21:34:12 Warning(3)      :WARN : Line 2
-2015/08/21 21:34:12 Error(2)        :ERROR: Line 1
-2015/08/21 21:34:12 Error(4)        :ERROR: Line 2
-2015/08/21 21:34:12 Debug(4)        :DEBUG: Line 1
-2015/08/21 21:34:12                 :INFO : End of test
+2015/08/24 13:34:48                 :INFO : Start of test
+2015/08/24 13:34:48 Info            :INFO : Line 1
+2015/08/24 13:34:48 Info            :INFO : Line 2
+2015/08/24 13:34:48 Info            :INFO : Line 3
+2015/08/24 13:34:48 Warning         :WARN : Line 1
+2015/08/24 13:34:48 Warning         :WARN : Line 2
+2015/08/24 13:34:48 Error           :ERROR: Line 1
+2015/08/24 13:34:48 Error           :ERROR: Line 2
+2015/08/24 13:34:48 Debug           :DEBUG: Line 1
+2015/08/24 13:34:48                 :INFO : End of test
 
 */
 package llog_test
@@ -24,6 +24,7 @@ import (
 var f = os.TempDir() + "/test.log"
 
 // some short cuts for the print functions
+var pm = llog.PrintMain
 var pi = llog.PrintInfo
 var pw = llog.PrintWarning
 var pe = llog.PrintError
@@ -33,35 +34,41 @@ func init() {
 	os.Remove(f)
 }
 func Test_CreateLog(t *testing.T) {
-	e := llog.New(f, 4)
+	e := llog.New(f, llog.INFO)
 	if e != nil {
 		t.Error("failed to create log : " + e.Error())
 		return
 	}
-	pi(1, "", "Start of test")
+	pm("", "Start of test")
 	llog.Close()
 }
 func Test_OpenLog(t *testing.T) {
-	pe(1, "Error(1)", "Cannot be seen")
-	e := llog.New(f, 4)
+	pe("Error", "Cannot be seen")
+	e := llog.New(f, llog.INFO)
 	if e != nil {
 		t.Error("failed to open log : " + e.Error())
 		return
 	}
-	pi(2, "Info(2)", "Line 1")
+	pi("Info", "Line 1")
 }
 func Test_Print(t *testing.T) {
-	pi(1, "Info(1)", "Line 2")
-	pi(4, "Info(4)", "Line 3")
-	pi(5, "Info(5)", "Should not be seen")
-	pw(3, "Warning(3)", "Line 1")
-	pw(3, "Warning(3)", "Line 2")
-	pe(2, "Error(2)", "Line 1")
-	pe(4, "Error(4)", "Line 2")
-	pd(4, "Debug(4)", "Line 1")
-	pi(1, "", "End of test")
+	pi("Info", "Line 2")
+	pi("Info", "Line 3")
+	pw("Warning", "Line 1")
+	pw("Warning", "Line 2")
+	pe("Error", "Line 1")
+	pe("Error", "Line 2")
+	pd("Debug", "Line not shown") // not shown in this test
+}
+func Test_SetDebugLevel(t *testing.T) {
+	llog.SetLevel(llog.DEBUG)
 }
 
-func Test_CleanUp(t *testing.T) {
+func Test_PrintDebug(t *testing.T) {
+	pd("Debug", "Line 1")
+}
+
+func Test_EndLogging(t *testing.T) {
+	pm("", "End of test")
 	llog.Close()
 }
