@@ -1,7 +1,9 @@
-/*Package llog is a logger for the main log file.
-Only 1 main log is possible.
+/*
+Package llog is a logger for the main log.
+
 Messages are written depending on the debug level.
 Several helpers for consistent formating are provided.
+Only 1 main log at one time is possible.
 */
 package llog
 
@@ -11,13 +13,14 @@ import (
 	"os"
 )
 
+// log levels
 const (
-	_ = iota
-	MAIN
-	ERROR
-	WARNING
-	INFO
-	DEBUG
+	_       = iota
+	MAIN    // Only main info
+	ERROR   // display also Error messages
+	WARNING // display also Warnings
+	INFO    // display all Informations
+	DEBUG   // display additional Debug messages
 )
 
 var ll lvlLogger
@@ -51,7 +54,7 @@ func SetLevel(l int) {
 	ll.lvl = l
 }
 
-// PrintMain writes an Maininfo msg to the log
+// PrintMain writes a Maininfo msg to the log
 func PrintMain(id, msg string) {
 	ll.writeLog(MAIN, "%-15s :INFO : %s\n", id, msg)
 }
@@ -71,7 +74,7 @@ func PrintError(id, msg string) {
 	ll.writeLog(ERROR, "%-15s :ERROR: %s\n", id, msg)
 }
 
-// PrintDebug writes an Debug msg to the log
+// PrintDebug writes a Debug msg to the log
 func PrintDebug(id, msg string) {
 	ll.writeLog(DEBUG, "%-15s :DEBUG: %s\n", id, msg)
 }

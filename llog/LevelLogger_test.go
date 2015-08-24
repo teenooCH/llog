@@ -16,6 +16,7 @@ Output expected similar to :
 package llog_test
 
 import (
+	"fmt"
 	"llog"
 	"os"
 	"testing"
@@ -70,5 +71,14 @@ func Test_PrintDebug(t *testing.T) {
 
 func Test_EndLogging(t *testing.T) {
 	pm("", "End of test")
+	llog.Close()
+}
+func Example() {
+	e := llog.New("/foo/bar", llog.INFO)
+	if e != nil {
+		fmt.Println("failed to create log : " + e.Error())
+		return
+	}
+	llog.PrintInfo("My ID", "Test of llog")
 	llog.Close()
 }
