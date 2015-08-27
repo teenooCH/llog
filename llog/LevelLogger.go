@@ -90,17 +90,23 @@ func (l *lvlLogger) rotate(postfix string) error {
 	var buf bytes.Buffer
 	l.log.SetOutput(&buf)
 	n := l.out.Name()
-	e := os.Rename(n, n+postfix)
-	if e != nil {
-		l.log.SetOutput(l.out)
-		return e
-	}
 	l.out.Close()
+	e := os.Rename(n, n+postfix)
 	l.out, e = os.OpenFile(n, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0640)
 	if e != nil {
 		return e
 	}
-	l.log = log.New(l.out, "", log.LstdFlags|log.LUTC)
-	// kopieren von buf
+	l.log.SetOutput(l.out)
+	if buf.Len() > 0 {
+		l.out.Write(buf.Bytes())
+	}
 	return nil
+}
+
+// Rotate moves the actual log file to the same file
+// name plus an prefix of '.1'. If there is an existing
+// file with that prefix, it is move to '.2'. This is done
+// up to num itterations. The num + 1 file will be deleted.
+func Rotate(num int) error {
+	return ll.rotate(".1")
 }

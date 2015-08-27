@@ -23,6 +23,7 @@ import (
 )
 
 var f = os.TempDir() + "/test.log"
+var fr = os.TempDir() + "/testrotate.log"
 
 // some short cuts for the print functions
 var pm = llog.PrintMain
@@ -33,6 +34,13 @@ var pd = llog.PrintDebug
 
 func init() {
 	os.Remove(f)
+}
+func Test_CreateLogFailure(t *testing.T) {
+	e := llog.New("/foo/bar", llog.INFO)
+	if e == nil {
+		t.Error("failed to provoke creation error!")
+		return
+	}
 }
 func Test_CreateLog(t *testing.T) {
 	e := llog.New(f, llog.INFO)
@@ -72,6 +80,22 @@ func Test_PrintDebug(t *testing.T) {
 func Test_EndLogging(t *testing.T) {
 	pm("", "End of test")
 	llog.Close()
+}
+func Test_Rotate(t *testing.T) {
+	e := llog.New(fr, llog.INFO)
+	if e != nil {
+		t.Error("failed to open log : " + e.Error())
+		return
+	}
+	pi("Info", "Line 1 pre rotate")
+	pi("Info", "Line 2 pre rotate")
+	e = llog.Rotate(2)
+	if e != nil {
+		t.Error("failed to rotate log : " + e.Error())
+		return
+	}
+	pi("Info", "Line 1 after rotate")
+	pi("Info", "Line 2 after rotate")
 }
 func Example() {
 	e := llog.New("/foo/bar", llog.INFO)
