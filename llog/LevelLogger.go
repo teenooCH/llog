@@ -105,7 +105,7 @@ func (l *lvlLogger) rotate(postfix string) error {
 
 // Rotate moves the actual log file to the same file
 // name plus an prefix of '.1'. If there is an existing
-// file with that prefix, it is move to '.2'. This is done
+// file with that prefix, it is moved to '.2'. This is done
 // up to num itterations. The num + 1 file will be deleted.
 func Rotate(num int) error {
 	return ll.rotate(".1")
