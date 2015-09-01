@@ -17,9 +17,10 @@ package llog_test
 
 import (
 	"fmt"
-	"llog"
 	"os"
 	"testing"
+
+	"github.com/teenooCH/llog"
 )
 
 var f = os.TempDir() + "/test.log"
