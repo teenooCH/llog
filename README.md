@@ -1,5 +1,6 @@
 # llog
 A logger controllable by levels.
 
-Get it with: go get github.com/teenooCH/llog
+import: _go get github.com/teenooCH/llog_
 
+Dokumentation : http://godoc.org/github.com/teenooCH/llog
