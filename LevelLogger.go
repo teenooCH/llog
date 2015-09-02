@@ -9,8 +9,11 @@ package llog
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
 )
 
 // log levels
@@ -108,5 +111,45 @@ func (l *lvlLogger) rotate(postfix string) error {
 // file with that prefix, it is moved to '.2'. This is done
 // up to num itterations. The num + 1 file will be deleted.
 func Rotate(num int) error {
+	dn := path.Dir(ll.out.Name())
+	bn := path.Base(ll.out.Name())
+	files, err := getFiles(dn, bn)
+	if err != nil {
+		return err
+	}
+	if files != nil {
+		if len(files) >= num {
+			for _, f := range files[num-1 : len(files)] {
+				fmt.Println("Löschen " + dn + "/" + f.Name())
+				os.Remove(dn + "/" + f.Name())
+			}
+			files = files[0 : num-1]
+		}
+		for i := len(files) - 1; i >= 0; i-- {
+			fmt.Println("Rename " + dn + "/" + files[i].Name() + " nach " + dn + "/" + bn + fmt.Sprintf(".%d", i+2))
+			os.Rename(dn+"/"+files[i].Name(), dn+"/"+bn+fmt.Sprintf(".%d", i+2))
+		}
+	}
 	return ll.rotate(".1")
+}
+
+// getFiles returns a sorted list of files in directory fpath
+// starting with fname (i.e. path/fname*).
+func getFiles(fpath, fname string) ([]os.FileInfo, error) {
+	files, err := ioutil.ReadDir(fpath)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]os.FileInfo, len(files))
+	count := 0
+	for _, f := range files {
+		if m, _ := path.Match(fname+".*", f.Name()); m {
+			res[count] = f
+			count++
+		}
+	}
+	if count > 0 {
+		return res[0:count], nil
+	}
+	return nil, nil
 }

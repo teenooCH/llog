@@ -36,6 +36,7 @@ var pd = llog.PrintDebug
 func init() {
 	os.Remove(f)
 }
+
 func Test_CreateLogFailure(t *testing.T) {
 	e := llog.New("/foo/bar", llog.INFO)
 	if e == nil {
@@ -43,6 +44,7 @@ func Test_CreateLogFailure(t *testing.T) {
 		return
 	}
 }
+
 func Test_CreateLog(t *testing.T) {
 	e := llog.New(f, llog.INFO)
 	if e != nil {
@@ -52,6 +54,7 @@ func Test_CreateLog(t *testing.T) {
 	pm("", "Start of test")
 	llog.Close()
 }
+
 func Test_OpenLog(t *testing.T) {
 	pe("Error", "Cannot be seen")
 	e := llog.New(f, llog.INFO)
@@ -61,6 +64,7 @@ func Test_OpenLog(t *testing.T) {
 	}
 	pi("Info", "Line 1")
 }
+
 func Test_Print(t *testing.T) {
 	pi("Info", "Line 2")
 	pi("Info", "Line 3")
@@ -70,6 +74,7 @@ func Test_Print(t *testing.T) {
 	pe("Error", "Line 2")
 	pd("Debug", "Line not shown") // not shown in this test
 }
+
 func Test_SetDebugLevel(t *testing.T) {
 	llog.SetLevel(llog.DEBUG)
 }
@@ -82,6 +87,7 @@ func Test_EndLogging(t *testing.T) {
 	pm("", "End of test")
 	llog.Close()
 }
+
 func Test_Rotate(t *testing.T) {
 	e := llog.New(fr, llog.INFO)
 	if e != nil {
@@ -90,7 +96,7 @@ func Test_Rotate(t *testing.T) {
 	}
 	pi("Info", "Line 1 pre rotate")
 	pi("Info", "Line 2 pre rotate")
-	e = llog.Rotate(2)
+	e = llog.Rotate(3)
 	if e != nil {
 		t.Error("failed to rotate log : " + e.Error())
 		return
@@ -98,6 +104,7 @@ func Test_Rotate(t *testing.T) {
 	pi("Info", "Line 1 after rotate")
 	pi("Info", "Line 2 after rotate")
 }
+
 func Example() {
 	e := llog.New("/foo/bar", llog.INFO)
 	if e != nil {
