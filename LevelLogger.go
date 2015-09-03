@@ -14,6 +14,9 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
+
+	"github.com/xlab/handysort"
 )
 
 // log levels
@@ -151,6 +154,7 @@ func getFiles(fpath, fname string) ([]string, error) {
 		for i, f := range match[0:count] {
 			res[i] = fpath + "/" + f.Name()
 		}
+		sort.Sort(handysort.Strings(res))
 		return res, nil
 	}
 	return nil, nil
