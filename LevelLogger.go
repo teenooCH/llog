@@ -120,13 +120,11 @@ func Rotate(num int) error {
 	if files != nil {
 		if len(files) >= num {
 			for _, f := range files[num-1 : len(files)] {
-				fmt.Println("Löschen " + dn + "/" + f.Name())
 				os.Remove(dn + "/" + f.Name())
 			}
 			files = files[0 : num-1]
 		}
 		for i := len(files) - 1; i >= 0; i-- {
-			fmt.Println("Rename " + dn + "/" + files[i].Name() + " nach " + dn + "/" + bn + fmt.Sprintf(".%d", i+2))
 			os.Rename(dn+"/"+files[i].Name(), dn+"/"+bn+fmt.Sprintf(".%d", i+2))
 		}
 	}
