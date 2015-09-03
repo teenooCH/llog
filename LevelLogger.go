@@ -120,12 +120,12 @@ func Rotate(num int) error {
 	if files != nil {
 		if len(files) >= num {
 			for _, f := range files[num-1 : len(files)] {
-				os.Remove(dn + "/" + f.Name())
+				os.Remove(f)
 			}
 			files = files[0 : num-1]
 		}
 		for i := len(files) - 1; i >= 0; i-- {
-			os.Rename(dn+"/"+files[i].Name(), dn+"/"+bn+fmt.Sprintf(".%d", i+2))
+			os.Rename(files[i], ll.out.Name()+fmt.Sprintf(".%d", i+2))
 		}
 	}
 	return ll.rotate(".1")
@@ -133,21 +133,25 @@ func Rotate(num int) error {
 
 // getFiles returns a sorted list of files in directory fpath
 // starting with fname (i.e. path/fname*).
-func getFiles(fpath, fname string) ([]os.FileInfo, error) {
+func getFiles(fpath, fname string) ([]string, error) {
 	files, err := ioutil.ReadDir(fpath)
 	if err != nil {
 		return nil, err
 	}
-	res := make([]os.FileInfo, len(files))
+	match := make([]os.FileInfo, len(files))
 	count := 0
 	for _, f := range files {
 		if m, _ := path.Match(fname+".*", f.Name()); m {
-			res[count] = f
+			match[count] = f
 			count++
 		}
 	}
 	if count > 0 {
-		return res[0:count], nil
+		res := make([]string, count)
+		for i, f := range match[0:count] {
+			res[i] = fpath + "/" + f.Name()
+		}
+		return res, nil
 	}
 	return nil, nil
 }
