@@ -22,6 +22,8 @@ const (
 	DEBUG   // display additional Debug messages
 )
 
+const leFormat string = "%-15s :%-5s: %s\n"
+
 var ll lvlLogger
 
 type lvlLogger struct {
@@ -55,27 +57,27 @@ func SetLevel(l int) {
 
 // PrintMain writes a Maininfo msg to the log
 func PrintMain(id, msg string) {
-	ll.writeLog(MAIN, "%-15s :INFO : %s\n", id, msg)
+	ll.writeLog(MAIN, leFormat, id, "INFO", msg)
 }
 
 // PrintInfo writes an Info msg to the log
 func PrintInfo(id, msg string) {
-	ll.writeLog(INFO, "%-15s :INFO : %s\n", id, msg)
+	ll.writeLog(INFO, leFormat, id, "INFO", msg)
 }
 
 // PrintWarning writes a Warning msg to the log
 func PrintWarning(id, msg string) {
-	ll.writeLog(WARNING, "%-15s :WARN : %s\n", id, msg)
+	ll.writeLog(WARNING, leFormat, id, "WARN", msg)
 }
 
 // PrintError writes an Error msg to the log
 func PrintError(id, msg string) {
-	ll.writeLog(ERROR, "%-15s :ERROR: %s\n", id, msg)
+	ll.writeLog(ERROR, leFormat, id, "ERROR", msg)
 }
 
 // PrintDebug writes a Debug msg to the log
 func PrintDebug(id, msg string) {
-	ll.writeLog(DEBUG, "%-15s :DEBUG: %s\n", id, msg)
+	ll.writeLog(DEBUG, leFormat, id, "DEBUG", msg)
 }
 
 func (l lvlLogger) writeLog(level int, format string, msg ...interface{}) {
@@ -123,7 +125,7 @@ func Rotate(num int) error {
 			files = files[0 : num-1]
 		}
 		for i := len(files) - 1; i >= 0; i-- {
-			os.Rename(files[i], ll.out.Name()+fmt.Sprintf(".%d", i+2))
+			os.Rename(files[i], fmt.Sprintf("%s.%d", ll.out.Name(), i+2))
 		}
 	}
 	return ll.rotate(".1")
@@ -147,7 +149,7 @@ func getFiles(fpath, fname string) ([]string, error) {
 	if count > 0 {
 		res := make([]string, count)
 		for i, f := range match[0:count] {
-			res[i] = fpath + "/" + f.Name()
+			res[i] = fmt.Sprintf("%s/%s", fpath, f.Name())
 		}
 		sort.Sort(handysort.Strings(res))
 		return res, nil
