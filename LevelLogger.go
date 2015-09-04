@@ -1,10 +1,3 @@
-/*
-Package llog is a logger for the main log.
-
-Messages are written depending on the debug level.
-Several helpers for consistent formating are provided.
-Only 1 main log at one time is possible.
-*/
 package llog
 
 import (
@@ -25,7 +18,7 @@ const (
 	MAIN    // Only main info
 	ERROR   // display also Error messages
 	WARNING // display also Warnings
-	INFO    // display all Informations
+	INFO    // display all Information
 	DEBUG   // display additional Debug messages
 )
 
@@ -37,7 +30,7 @@ type lvlLogger struct {
 	log *log.Logger // logger
 }
 
-// New creates a new main logger which stores
+// New creates a new logger which stores
 // the messages to filename. Messages are only written
 // if the message log level is >= level.
 func New(filename string, level int) error {
@@ -50,7 +43,7 @@ func New(filename string, level int) error {
 	return nil
 }
 
-// Close removes the main logger.
+// Close closes the file opened by New().
 func Close() {
 	ll.out.Close()
 }
@@ -92,6 +85,8 @@ func (l lvlLogger) writeLog(level int, format string, msg ...interface{}) {
 	}
 }
 
+// rotate moves the current file to filename.postfix
+// and opens a new one.
 func (l *lvlLogger) rotate(postfix string) error {
 	var buf bytes.Buffer
 	l.log.SetOutput(&buf)
