@@ -111,9 +111,7 @@ func (l *lvlLogger) rotate(postfix string) error {
 // file with that prefix, it is moved to '.2'. This is done
 // up to num itterations. The num + 1 file will be deleted.
 func Rotate(num int) error {
-	dn := path.Dir(ll.out.Name())
-	bn := path.Base(ll.out.Name())
-	files, err := getFiles(dn, bn)
+	files, err := getFiles(ll.out.Name())
 	if err != nil {
 		return err
 	}
@@ -131,17 +129,19 @@ func Rotate(num int) error {
 	return ll.rotate(".1")
 }
 
-// getFiles returns a sorted list of files in directory fpath
-// starting with fname (i.e. path/fname*).
-func getFiles(fpath, fname string) ([]string, error) {
-	files, err := ioutil.ReadDir(fpath)
+// getFiles returns a sorted list of files in the directory
+// in which fname exists starting with fname (i.e. fname*).
+func getFiles(fname string) ([]string, error) {
+	dn := path.Dir(fname)
+	bn := path.Base(fname)
+	files, err := ioutil.ReadDir(dn)
 	if err != nil {
 		return nil, err
 	}
 	match := make([]os.FileInfo, len(files))
 	count := 0
 	for _, f := range files {
-		if m, _ := path.Match(fname+".*", f.Name()); m {
+		if m, _ := path.Match(bn+".*", f.Name()); m {
 			match[count] = f
 			count++
 		}
@@ -149,7 +149,7 @@ func getFiles(fpath, fname string) ([]string, error) {
 	if count > 0 {
 		res := make([]string, count)
 		for i, f := range match[0:count] {
-			res[i] = fmt.Sprintf("%s/%s", fpath, f.Name())
+			res[i] = fmt.Sprintf("%s/%s", dn, f.Name())
 		}
 		sort.Sort(handysort.Strings(res))
 		return res, nil
