@@ -1,16 +1,17 @@
 /*
 Output expected similar to :
 
-2015/09/15 21:10:52                :INFO : Start of test
-2015/09/15 21:10:52 Info           :INFO : Line 1
-2015/09/15 21:10:52 Info           :INFO : Line 2
-2015/09/15 21:10:52 Info           :INFO : Line 3
-2015/09/15 21:10:52 Warning        :WARN : Line 1
-2015/09/15 21:10:52 Warning        :WARN : Line 2
-2015/09/15 21:10:52 Error          :ERROR: Line 1
-2015/09/15 21:10:52 Error          :ERROR: Line 2
-2015/09/15 21:10:52 Debug          :DEBUG: Line 1
-2015/09/15 21:10:52                :INFO : End of test
+2015/09/15 21:31:56                :INFO : Start of test
+2015/09/15 21:31:56 Info           :INFO : Line 1
+2015/09/15 21:31:56 Info           :INFO : Line 2
+2015/09/15 21:31:56 Info           :INFO : Line 3
+2015/09/15 21:31:56 Warning        :WARN : Line 1
+2015/09/15 21:31:56 Warning        :WARN : Line 2
+2015/09/15 21:31:56 Error          :ERROR: Line 1
+2015/09/15 21:31:56 Error          :ERROR: Line 2
+2015/09/15 21:31:56 Debug          :DEBUG: Line 1
+2015/09/15 21:31:56 Debug     :DEBUG     : Line 2
+2015/09/15 21:31:56           :INFO      : End of test
 
 */
 package llog_test
@@ -81,6 +82,11 @@ func Test_SetDebugLevel(t *testing.T) {
 
 func Test_PrintDebug(t *testing.T) {
 	pd("Debug", "Line 1")
+}
+
+func Test_SetFormat(t *testing.T) {
+	llog.SetFormat("%-10s:%-10s: %s\n")
+	pd("Debug", "Line 2")
 }
 
 func Test_EndLogging(t *testing.T) {

@@ -21,7 +21,8 @@ const (
 	DEBUG          // display additional Debug messages
 )
 
-const leFormat string = "%-15s:%-5s: %s\n"
+// default format for the log strings
+const deFormat string = "%-15s:%-5s: %s\n"
 
 var ll lvlLogger
 
@@ -29,6 +30,7 @@ type lvlLogger struct {
 	lvl int         // debug level
 	out *os.File    // log file
 	log *log.Logger // logger
+	fmt string      // print format
 }
 
 // New creates a new logger which stores
@@ -40,7 +42,7 @@ func New(filename string, level int) error {
 		return err
 	}
 	l := log.New(f, "", log.LstdFlags|log.LUTC)
-	ll = lvlLogger{lvl: level, out: f, log: l}
+	ll = lvlLogger{lvl: level, out: f, log: l, fmt: deFormat}
 	return nil
 }
 
@@ -55,29 +57,35 @@ func SetLevel(l int) {
 	ll.lvl = l
 }
 
+// SetFormat set a new formating string for the Print* functions.
+// It has to include at least 3 %s expressions.
+func SetFormat(f string) {
+	ll.fmt = f
+}
+
 // PrintMain writes a Maininfo msg to the log
 func PrintMain(id, msg string) {
-	ll.writeLog(MAIN, leFormat, id, "INFO", msg)
+	ll.writeLog(MAIN, ll.fmt, id, "INFO", msg)
 }
 
 // PrintInfo writes an Info msg to the log
 func PrintInfo(id, msg string) {
-	ll.writeLog(INFO, leFormat, id, "INFO", msg)
+	ll.writeLog(INFO, ll.fmt, id, "INFO", msg)
 }
 
 // PrintWarning writes a Warning msg to the log
 func PrintWarning(id, msg string) {
-	ll.writeLog(WARNING, leFormat, id, "WARN", msg)
+	ll.writeLog(WARNING, ll.fmt, id, "WARN", msg)
 }
 
 // PrintError writes an Error msg to the log
 func PrintError(id, msg string) {
-	ll.writeLog(ERROR, leFormat, id, "ERROR", msg)
+	ll.writeLog(ERROR, ll.fmt, id, "ERROR", msg)
 }
 
 // PrintDebug writes a Debug msg to the log
 func PrintDebug(id, msg string) {
-	ll.writeLog(DEBUG, leFormat, id, "DEBUG", msg)
+	ll.writeLog(DEBUG, ll.fmt, id, "DEBUG", msg)
 }
 
 func (l lvlLogger) writeLog(level int, format string, msg ...interface{}) {
