@@ -45,12 +45,13 @@ func New(filename string, level int) error {
 	return nil
 }
 
-// Close closes the file opened by New().
+// Close will clos the logger opened by New().
 func Close() {
 	ll.out.Close()
 }
 
-// SetLevel sets a new log level
+// SetLevel sets a new log level. A value < 0 will
+// turn off the logging.
 func SetLevel(l int) {
 	ll.lvl = l
 }
@@ -87,8 +88,8 @@ func (l lvlLogger) writeLog(level int, format string, msg ...interface{}) {
 	}
 }
 
-// rotate moves the current file to filename.postfix
-// and opens a new one.
+// rotate moves the current file to filename+postfix
+// and opens a new one with the old name.
 func (l *lvlLogger) rotate(postfix string) error {
 	var buf bytes.Buffer
 	l.log.SetOutput(&buf)
@@ -107,9 +108,9 @@ func (l *lvlLogger) rotate(postfix string) error {
 }
 
 // Rotate moves the actual log file to the same file
-// name plus an prefix of '.1'. If there is an existing
+// name plus a prefix of '.1'. If there is an existing
 // file with that prefix, it is moved to '.2'. This is done
-// up to num itterations. The num + 1 file will be deleted.
+// up to num itterations. All files > num will be deleted.
 func Rotate(num int) error {
 	files, err := getFiles(ll.out.Name())
 	if err != nil {
