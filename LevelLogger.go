@@ -14,15 +14,14 @@ import (
 
 // log levels
 const (
-	_       = iota
-	MAIN    // Only main info
-	ERROR   // display also Error messages
-	WARNING // display also Warnings
-	INFO    // display all Information
-	DEBUG   // display additional Debug messages
+	MAIN    = iota // Only main info
+	ERROR          // display also Error messages
+	WARNING        // display also Warnings
+	INFO           // display all Information
+	DEBUG          // display additional Debug messages
 )
 
-const leFormat string = "%-15s :%-5s: %s\n"
+const leFormat string = "%-15s:%-5s: %s\n"
 
 var ll lvlLogger
 
@@ -118,10 +117,10 @@ func Rotate(num int) error {
 	}
 	if files != nil {
 		if len(files) >= num {
-			for _, f := range files[num-1 : len(files)] {
+			for _, f := range files[num-1:] {
 				os.Remove(f)
 			}
-			files = files[0 : num-1]
+			files = files[:num-1]
 		}
 		for i := len(files) - 1; i >= 0; i-- {
 			os.Rename(files[i], fmt.Sprintf("%s.%d", ll.out.Name(), i+2))
@@ -149,7 +148,7 @@ func getFiles(fname string) ([]string, error) {
 	}
 	if count > 0 {
 		res := make([]string, count)
-		for i, f := range match[0:count] {
+		for i, f := range match[:count] {
 			res[i] = fmt.Sprintf("%s/%s", dn, f.Name())
 		}
 		sort.Sort(handysort.Strings(res))

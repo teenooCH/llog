@@ -1,16 +1,16 @@
 /*
 Output expected similar to :
 
-2015/08/24 13:34:48                 :INFO : Start of test
-2015/08/24 13:34:48 Info            :INFO : Line 1
-2015/08/24 13:34:48 Info            :INFO : Line 2
-2015/08/24 13:34:48 Info            :INFO : Line 3
-2015/08/24 13:34:48 Warning         :WARN : Line 1
-2015/08/24 13:34:48 Warning         :WARN : Line 2
-2015/08/24 13:34:48 Error           :ERROR: Line 1
-2015/08/24 13:34:48 Error           :ERROR: Line 2
-2015/08/24 13:34:48 Debug           :DEBUG: Line 1
-2015/08/24 13:34:48                 :INFO : End of test
+2015/09/15 21:10:52                :INFO : Start of test
+2015/09/15 21:10:52 Info           :INFO : Line 1
+2015/09/15 21:10:52 Info           :INFO : Line 2
+2015/09/15 21:10:52 Info           :INFO : Line 3
+2015/09/15 21:10:52 Warning        :WARN : Line 1
+2015/09/15 21:10:52 Warning        :WARN : Line 2
+2015/09/15 21:10:52 Error          :ERROR: Line 1
+2015/09/15 21:10:52 Error          :ERROR: Line 2
+2015/09/15 21:10:52 Debug          :DEBUG: Line 1
+2015/09/15 21:10:52                :INFO : End of test
 
 */
 package llog_test
